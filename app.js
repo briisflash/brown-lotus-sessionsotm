@@ -141,7 +141,92 @@ const videos = [
 
 // Verified past-session records can be added here when dates, venues and materials are available.
 // Example record fields: title, date, city, venue, description, image, videoUrl, setlist.
-const pastSessions = [];
+const pastSessions = [
+  {
+    "id": "sesh-lava-latte-jun-2026",
+    "title": "Sesh on the Moon × Lava Latte",
+    "date": "27 June 2026",
+    "city": "Lavington, Nairobi",
+    "venue": "Lava Latte, Chaka Road",
+    "time": "3 PM – 8 PM",
+    "description": "Afternoon of live music, electronica-healing sounds and ceremony; cacao circle hosted by Agutu.",
+    "artistSlugs": [],
+    "additionalArtists": []
+  },
+  {
+    "id": "new-moon-harvests-dec-2025",
+    "title": "The New Moon Harvests — Sessions on the Moon × Baobab Studios",
+    "date": "20 December 2025",
+    "city": "Kilifi, Kenya",
+    "venue": "Baobab Studios",
+    "time": "5 PM – late",
+    "description": "Live and recorded performances, including a surprise experimental performance advertised on the poster.",
+    "artistSlugs": [
+      "june-on-the-moon",
+      "matt-swallow"
+    ],
+    "additionalArtists": [
+      "Matt Ngosa",
+      "Kenia (DJ set)"
+    ]
+  },
+  {
+    "id": "standing-room-only-feb-2025",
+    "title": "Standing Room Only — Sessions on the Moon × Baobab Studios",
+    "date": "2 February 2025",
+    "city": "Kilifi, Kenya",
+    "venue": "Baobab Studios",
+    "time": "From 5 PM",
+    "description": "Live music and recording session with special guests, DJs, food and mnazi; definitive artist lineup not supplied.",
+    "artistSlugs": [],
+    "additionalArtists": []
+  },
+  {
+    "id": "hotel-troy-dec-2024",
+    "title": "Sessions on the Moon — June on the Moon & Jesse David",
+    "date": "8 December 2024",
+    "city": "Karen, Nairobi",
+    "venue": "Hotel Troy",
+    "time": "From 3 PM",
+    "description": "Live folk music, an open mic, food, cocktail bar and DJs.",
+    "artistSlugs": [
+      "june-on-the-moon",
+      "jesse-david"
+    ],
+    "additionalArtists": []
+  },
+  {
+    "id": "hotel-troy-nov-2024",
+    "title": "Sessions on the Moon — Hotel Troy",
+    "date": "10 November 2024",
+    "city": "Karen, Nairobi",
+    "venue": "Hotel Troy",
+    "time": "From 2 PM",
+    "description": "Live music, poetry, food, handmade jewellery and DJs. The organiser confirmed that Papillon performed.",
+    "artistSlugs": [
+      "papillon",
+      "akoth-jumadi",
+      "june-on-the-moon"
+    ],
+    "additionalArtists": []
+  },
+  {
+    "id": "jazz-soul-aug-11",
+    "title": "Jazz & Soul Night",
+    "date": "Sunday 11 August · year to confirm",
+    "city": "Nairobi, Kenya",
+    "venue": "",
+    "time": "From 3 PM",
+    "description": "Confirmed performance with June on the Moon, Ngare and Baraza. Year and venue are still being documented.",
+    "artistSlugs": [
+      "june-on-the-moon",
+      "ngare-kiria",
+      "baraza"
+    ],
+    "additionalArtists": [],
+    "posterUrl": "https://www.canva.com/design/DAGLGJzHlp8/edit"
+  }
+];
 function renderPastSessions(){
   const grid=document.querySelector("#past-sessions-grid");
   const empty=document.querySelector("#past-sessions-empty");
@@ -153,11 +238,14 @@ function renderPastSessions(){
     card.append(node("p","eyebrow",[event.date,event.city].filter(Boolean).join(" / ")));
     card.append(node("h3",null,event.title||"Past session"));
     if(event.venue)card.append(node("p","meta",event.venue));
+    if(event.time)card.append(node("p","meta",event.time));
+    const credits=[...(event.artistSlugs||[]).map(slug=>artistBySlug(slug)?.name||slug),...(event.additionalArtists||[])];
+    if(credits.length)card.append(node("p","past-session-artists","FEATURING / "+credits.join(" · ")));
     if(event.description)card.append(node("p",null,event.description));
     if(event.image){
       const img=node("img");img.src=event.image;img.alt=event.title||"Session photograph";img.loading="lazy";card.prepend(img);
     }
-    if(event.videoUrl){const links=node("div","dialog-links");addLink(links,"Watch session",event.videoUrl);card.append(links);}
+    if(event.posterUrl||event.videoUrl){const links=node("div","dialog-links");if(event.posterUrl)addLink(links,"View poster collection",event.posterUrl);if(event.videoUrl)addLink(links,"Watch session",event.videoUrl);card.append(links);}
     if(event.setlist && event.setlist.length){card.append(node("p","meta","SETLIST: "+event.setlist.join(" · ")));}
     grid.append(card);
   }
