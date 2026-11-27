@@ -21,9 +21,17 @@ Then verify `/`, `/#films`, `/#past-sessions`, `/#roadmap`, `/journal/`, `/journ
 
 To retain the existing website address after verification, switch the existing Sessions on the Moon Netlify project to this repository using the Netlify project repository settings (if supported), or attach the desired domain to the new site.
 
-## Temporary media dependency
+## Media now hosted independently
 
-The current artist visuals and June's PDF load using absolute URLs from `https://brownlotuspress.netlify.app/assets/`. This is deliberate: the text-code migration is complete, but **the media files have not yet been duplicated into this new repository**. The sites have distinct code and deployments but are not yet fully independent for media hosting. Copy the licensed assets into `assets/` here before removing the public URLs. Never delete the originals before validating the copies.
+The three files used by the platform are now stored in this repository under `assets/`:
+- `june-hero-2.jpg`
+- `june-photo-4.jpg`
+- `june-presskit.pdf`
+
+The Sessions platform points to those local media files. June's original press kit and media remain in the separate original repository. A clearly labeled external link to the **original June on the Moon press-kit site** is intentional and does not affect independent asset hosting.
+
+The one-time asset import was completed by GitHub Actions (see `.github/workflows/import-press-assets.yml`).
+The source project and the new platform are separate. Keep both websites active while testing the Netlify domain configuration.
 
 ## Editing
 
