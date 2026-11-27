@@ -1,0 +1,46 @@
+name: Import approved June press assets
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/import-press-assets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out independent Sessions on the Moon repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Copy required media from original public June repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets
+          for file in june-hero-2.jpg june-photo-4.jpg june-presskit.pdf; do
+            curl --fail --location --silent --show-error --retry 3 \
+              "https://raw.githubusercontent.com/briisflash/juneonthemoon-presskit/main/assets/$file" \
+              --output "assets/$file"
+            test -s "assets/$file"
+          done
+          file assets/*
+          test "$(stat -c%s assets/june-hero-2.jpg)" -gt 100000
+          test "$(stat -c%s assets/june-photo-4.jpg)" -gt 100000
+          test "$(stat -c%s assets/june-presskit.pdf)" -gt 100000
+          head -c 4 assets/june-presskit.pdf | grep -q '%PDF'
+      - name: Commit imported assets if changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/june-hero-2.jpg assets/june-photo-4.jpg assets/june-presskit.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Copy June press media into independent Sessions archive"
+            git push
+          fi
