@@ -1,0 +1,4 @@
+# Sessions on the Moon independent static site
+# Repository root contains index.html, styles.css, app.js and journal/.
+[build]
+  publish = "."
