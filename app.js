@@ -16,6 +16,123 @@ const artists = [
     spotify: "https://open.spotify.com/artist/4D7fnI4k0SwiiH1v9u6l1j",
     bandcamp: "https://juneonthemoonmusic.bandcamp.com/track/leaving-samsara-where-i-am",
     instagram: "https://www.instagram.com/juneonthemoonmusic/?hl=en"
+  },
+  {
+    slug: "akoth-jumadi",
+    name: "Akoth Jumadi",
+    location: "Kenya",
+    region: "East Africa",
+    genres: ["Luo indie-folk"],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "baraza",
+    name: "Baraza",
+    location: "",
+    region: "To be documented",
+    genres: [],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "brick-jaspers",
+    name: "Brick Jaspers",
+    location: "UK",
+    region: "United Kingdom",
+    genres: ["Indie-folk"],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "chief-and-the-marshalls",
+    name: "Chief & the Marshalls",
+    location: "Kenya",
+    region: "East Africa",
+    genres: ["Reggae / Neo-soul"],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "jesse-david",
+    name: "Jesse David",
+    location: "",
+    region: "To be documented",
+    genres: [],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "kaa-la-moto",
+    name: "Kaa La Moto",
+    location: "",
+    region: "To be documented",
+    genres: [],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "kelvin-kingua",
+    name: "Kelvin Kingua",
+    location: "",
+    region: "To be documented",
+    genres: [],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "matt-swallow",
+    name: "Matt Swallow",
+    location: "",
+    region: "To be documented",
+    genres: ["Northumbrian folk"],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "ngare-kiria",
+    name: "Ngare Kiria",
+    location: "Kenya",
+    region: "East Africa",
+    genres: ["Jazz"],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "ogutu-muraya",
+    name: "Ogutu Muraya",
+    location: "",
+    region: "To be documented",
+    genres: [],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "papillon",
+    name: "Papillon Musa",
+    location: "Kenya",
+    region: "East Africa",
+    genres: ["Traditional folk"],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "sam-mbaluka",
+    name: "Sam Mbaluka",
+    location: "Kenya",
+    region: "East Africa",
+    genres: ["Jazz fusion"],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
+  },
+  {
+    slug: "tendere",
+    name: "Tendere",
+    location: "Kenya",
+    region: "East Africa",
+    genres: ["Mijikenda traditional music"],
+    descriptor: "Previously featured / Sessions on the Moon pitch",
+    bio: "Listed as a featured artist in the Sessions on the Moon pitch. Biography, media and performance dates will be added after they are verified."
   }
 ];
 const videos = [
@@ -57,16 +174,21 @@ function showArtists(){
   const grid=$("#artist-grid"); grid.replaceChildren();
   list.forEach(a=>{
     const card=node("button","artist-card"); card.type="button"; card.setAttribute("aria-label","View "+a.name+" profile");
-    const img=node("img"); img.src=a.portrait; img.alt="Press portrait of "+a.name; img.loading="lazy"; card.append(img);
-    card.append(node("h3",null,a.name),node("span","meta",a.location.toUpperCase()),node("p",null,a.genres.join(" / ")));
+    if(a.portrait){
+      const img=node("img"); img.src=a.portrait; img.alt="Press portrait of "+a.name; img.loading="lazy"; card.append(img);
+    }else{
+      const placeholder=node("div","artist-placeholder");placeholder.setAttribute("aria-hidden","true");
+      placeholder.append(node("span","placeholder-mark","◐"),node("span","placeholder-name",a.name));card.append(placeholder);
+    }
+    card.append(node("h3",null,a.name),node("span","meta",(a.location||"Featured artist").toUpperCase()),node("p",null,a.genres.length?a.genres.join(" / "):"Profile details forthcoming"));
     card.addEventListener("click",()=>openArtist(a));grid.append(card);
   });
   $("#artist-empty").hidden=list.length>0;
 }
 function openArtist(a){
   const d=$("#artist-detail"); d.replaceChildren();
-  d.append(node("p","eyebrow","ARTIST PROFILE / "+a.location),node("h2",null,a.name),node("p","meta",a.descriptor));
-  const photo=node("img","profile-photo");photo.src=a.portrait;photo.alt="Portrait of "+a.name;d.append(photo,node("p",null,a.bio));
+  d.append(node("p","eyebrow","ARTIST PROFILE"+(a.location?" / "+a.location:"")),node("h2",null,a.name),node("p","meta",a.descriptor));
+  if(a.portrait){const photo=node("img","profile-photo");photo.src=a.portrait;photo.alt="Portrait of "+a.name;d.append(photo);}d.append(node("p",null,a.bio));
   const links=node("div","dialog-links");addLink(links,"Download press kit",a.pressKit);addLink(links,"Spotify",a.spotify);addLink(links,"Bandcamp",a.bandcamp);addLink(links,"Instagram",a.instagram);addLink(links,"Original artist website",a.originalSite);d.append(links);
   const related=videos.filter(v=>v.artistSlugs.includes(a.slug));if(related.length){d.append(node("h3",null,"Music films"));related.forEach(v=>{const b=node("button","button",v.title+" ▶");b.type="button";b.addEventListener("click",()=>{$("#artist-dialog").close();openVideo(v)});d.append(b);});}
   $("#artist-dialog").setAttribute("aria-label",a.name+" artist profile");$("#artist-dialog").showModal();
